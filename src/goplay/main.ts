@@ -106,7 +106,7 @@ export class MarkdownGoplay {
       return workdir as string;
     }
     // 設定が取得できない場合、開いているファイルのディレクトリとする
-    let fileDir = path.dirname(editor.document.uri.fsPath);
+    const fileDir = path.dirname(editor.document.uri.fsPath);
     return fileDir;
   }
 
@@ -138,10 +138,10 @@ export class MarkdownGoplay {
     } catch (e) {
       // 異常終了
       // エラー出力を出力パネルに書き出して、表示する
-      this.outputChannel.append(e.stderr.toString());
+      this.outputChannel.append((e as child_process.SpawnSyncReturns<Buffer>).stderr?.toString());
       this.outputChannel.show();
-      throw new ExecutionError();
     }
+    throw new ExecutionError();
   }
 
   /**
@@ -160,6 +160,7 @@ export class MarkdownGoplay {
     switch (editor.document.eol) {
       case vscode.EndOfLine.CRLF:
         eol = "\r\n";
+        break;
       default:
         eol = "\n";
     }
